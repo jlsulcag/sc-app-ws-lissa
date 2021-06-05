@@ -1,10 +1,6 @@
 package com.sulcacorp.lissa.exception;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-
-import javax.xml.ws.Response;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

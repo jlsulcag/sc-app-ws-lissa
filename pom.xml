@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.6.RELEASE</version>
+		<version>2.3.8.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sulcacorp.farmacia</groupId>
@@ -50,7 +51,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.12</version>
+			<version>1.18.12</version><!--$NO-MVN-MAN-VER$-->
 			<scope>provided</scope>
 		</dependency>
 
@@ -58,24 +59,43 @@
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
-			<version>2.9.2</version>
+			<version>3.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
-			<version>2.9.2</version>
+			<version>3.0.0</version>
 		</dependency>
 		<!-- Fin Dependencias de documentacion de servicios REST -->
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.10</version>
+			<version>3.11</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
-
+		
+		<!-- Validation para spring boot 2.3.x en adelante -->
+<!-- 		<dependency> -->
+<!-- 		    <groupId>javax.validation</groupId> -->
+<!-- 		    <artifactId>validation-api</artifactId> -->
+<!-- 		    <version>2.0.1.Final</version>$NO-MVN-MAN-VER$ -->
+<!-- 		</dependency> -->
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+				
+		<!-- Conversión entidad-dto -->
+		<dependency>
+		    <groupId>org.modelmapper</groupId>
+		    <artifactId>modelmapper</artifactId>
+		    <version>2.3.9</version>
+		</dependency>
+		
 
 	</dependencies>
-
+	
 	<build>
 		<plugins>
 			<plugin>

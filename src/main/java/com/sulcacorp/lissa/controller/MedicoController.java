@@ -1,6 +1,5 @@
 package com.sulcacorp.lissa.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,27 +17,28 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sulcacorp.lissa.exception.ModeloNotFoundException;
 import com.sulcacorp.lissa.model.Medico;
 import com.sulcacorp.lissa.service.IMedicoService;
+import com.sulcacorp.lissa.service.impl.MedicoServiceImpl;
 
 @RestController
 @RequestMapping("/api")
 public class MedicoController {
 
 	@Autowired
-	private IMedicoService medicoService;
+	private MedicoServiceImpl medicoService;
 
 	@PostMapping(value = "/medico/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Medico> save(@Valid @RequestBody Medico medico) {
-		return new ResponseEntity<Medico>(medicoService.guardar(medico), HttpStatus.CREATED);
+		return new ResponseEntity<Medico>(medicoService.save(medico), HttpStatus.CREATED);
 	}
 
 	@PutMapping(value = "/medico/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Medico> update(@Valid @RequestBody Medico medico) {
-		return ResponseEntity.ok(medicoService.actualizar(medico));
+		return ResponseEntity.ok(medicoService.update(medico));
 	}
 
 	@GetMapping(value = "/medico/searchById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Medico> searchById(@PathVariable("id") Long id) {
-		Medico medico = medicoService.buscar(id);
+		Medico medico = medicoService.findById(id);
 		if (medico.getIdMedico() == null) {
 			throw new ModeloNotFoundException("ID NO ENCONTRADO " + id);
 		}
@@ -47,16 +47,16 @@ public class MedicoController {
 
 	@GetMapping(value = "/medico/findAll", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Medico>> findAll() {
-		return ResponseEntity.ok(medicoService.listar());
+		return ResponseEntity.ok(medicoService.findAllAct());
 	}
 
 	@DeleteMapping(value = "/medico/delete/{id}")
 	public void delete(@PathVariable("id") Long id) {
-		Medico medico = medicoService.buscar(id);
+		Medico medico = medicoService.findById(id);
 		if (medico.getIdMedico() == null) {
 			throw new ModeloNotFoundException("ID NO ENCONTRADO " + id);
 		} else {
-			medicoService.eliminar(id);
+			medicoService.delete(id);
 		}
 	}
 }

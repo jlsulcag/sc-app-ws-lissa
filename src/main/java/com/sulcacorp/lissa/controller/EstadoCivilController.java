@@ -1,16 +1,11 @@
 package com.sulcacorp.lissa.controller;
 
-import java.net.URI;
 import java.util.List;
-
 import javax.validation.Valid;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,59 +14,106 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.sulcacorp.lissa.exception.ModeloNotFoundException;
-import com.sulcacorp.lissa.model.EstadoCivil;
+import com.sulcacorp.lissa.controller.commons.ResponseRest;
+import com.sulcacorp.lissa.controller.generic.GenericController;
+import com.sulcacorp.lissa.dto.EstadoCivilDTO;
+import com.sulcacorp.lissa.service.exception.CustomServiceException;
 import com.sulcacorp.lissa.service.impl.EstadoCivilServiceImpl;
+import com.sulcacorp.lissa.util.Constant;
+
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/api")
-public class EstadoCivilController {
-	
+@RequestMapping("/api/estadoCivil")
+@Slf4j
+public class EstadoCivilController extends GenericController {
+
 	@Autowired
 	private EstadoCivilServiceImpl service;
-	private static Logger log = LoggerFactory.getLogger(EstadoCivilController.class);
-	
-	@PostMapping(value = "/estadoCivil/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> guardar(@Valid   @RequestBody EstadoCivil t){
-		EstadoCivil obj = new EstadoCivil();
-		t.setDescripcion(t.getDescripcion().toUpperCase());
-		obj = service.guardar(t);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}").buildAndExpand(obj.getIdEstadoCivil()).toUri();
-		return ResponseEntity.created(location).build();
-	}
-	
-	@PutMapping(value = "/estadoCivil/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> actualizar(@Valid @RequestBody EstadoCivil t){
-		t.setDescripcion(t.getDescripcion().toUpperCase());
-		log.info("Update : {}", t.getIdEstadoCivil());
-		service.actualizar(t);
-		return new ResponseEntity<Object>(HttpStatus.OK);
-	}
-	
-	@DeleteMapping(value = "/estadoCivil/delete/{id}")
-	public void eliminar(@PathVariable("id") long id) {
-		EstadoCivil obj = service.buscar(id);
-		if(obj == null || obj.getIdEstadoCivil() == 0) {
-			throw new ModeloNotFoundException("ID NO ENCONTRADO "+id);
-		}else {
-			service.eliminar(id);
-		}		
-	}
-	
-	@GetMapping(value = "/estadoCivil/search/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<EstadoCivil> buscarXId(@PathVariable("id") long id){
-		EstadoCivil estadoCivil = service.buscar(id);
-		if(estadoCivil == null || estadoCivil.getIdEstadoCivil()== 0) {
-			throw new ModeloNotFoundException("ID NO ENCONTRADO "+id);
+
+	@PostMapping(value = "/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResponseRest> save(@Valid @RequestBody EstadoCivilDTO t, BindingResult result) {
+		log.info("Process estadoCivil save :::>");
+		if (result.hasErrors()) {
+			return this.getBadRequest(result);
 		}
-		return new ResponseEntity<EstadoCivil>(estadoCivil, HttpStatus.OK);
+		try {
+			EstadoCivilDTO dto;
+			dto = service.save(t);
+			return this.getCreatedResponse(dto, result);
+		} catch (CustomServiceException e) {
+			log.error(">>> Error /api/estadoCivil/save {}", e.getMessage());
+			return this.getInternalServerError();
+		}
 	}
-	
-	@GetMapping(value = "/estadoCivil/findAll")
-	public ResponseEntity<List<EstadoCivil>> listar(){
-		return new ResponseEntity<List<EstadoCivil>>(service.listar(), HttpStatus.OK);
+
+	@PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResponseRest> update(@Valid @RequestBody EstadoCivilDTO t, BindingResult result) {
+		log.info("Process estadoCivil actualizar :::>");
+		if (result.hasErrors()) {
+			return this.getBadRequest(result);
+		}
+		try {
+			EstadoCivilDTO dto;
+			dto = service.update(t);
+			return this.getCreatedResponse(dto, result);
+		} catch (CustomServiceException e) {
+			log.error(">>> Error /api/estadoCivil/update {}", e.getMessage());
+			return this.getInternalServerError();
+		}
+	}
+
+	@DeleteMapping(value = "/delete/{id}")
+	public ResponseEntity<ResponseRest> delete(@PathVariable("id") long id) {
+		log.info(">>> Process estadoCivil eliminar x ID :::>");
+		try {
+			EstadoCivilDTO dto = service.findById(id);
+			if (dto == null) {
+				log.info(">>> {} no encontrado", this.getClass().getName());
+				return this.getNotFoundRequest();
+			}
+			dto.setEstado(Constant.STATUS_DISABLE);
+			service.update(dto);
+			return this.getOkResponseConsulta(dto);
+		} catch (CustomServiceException e) {
+			log.error(">>> Error estadoCivil delete : {}", e.getMessage());
+			return this.getInternalServerError();
+		}
+	}
+
+	@GetMapping(value = "/findById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResponseRest> findById(@PathVariable("id") long id) {
+		log.info(">>> Process estadoCivil buscar x ID");
+		EstadoCivilDTO estadoCivilDTO;
+		try {
+			estadoCivilDTO = service.findById(id);
+			if (estadoCivilDTO == null) {
+				log.info("Estado Civil no encontrado :::>");
+				return this.getNotFoundRequest();
+			}
+			return this.getOkResponseConsulta(estadoCivilDTO);
+		} catch (CustomServiceException e) {
+			log.error(">>> Error estadoCivil findById :\n {}", e.getMessage());
+			return this.getInternalServerError();
+		}
+
+	}
+
+	@GetMapping(value = "/findAll")
+	public ResponseEntity<ResponseRest> findAllAct() {
+		log.info(">>> Process estadoCivil findAllAct :::>");
+		try {
+			List<EstadoCivilDTO> list = service.findAllAct();
+			if(list.isEmpty()) {
+				return this.getNotFoundRequest();
+			}
+			return this.getOkResponseConsulta(list);
+		} catch (CustomServiceException e) {
+			log.error(">>> Error findAll... {}", e.getMessage());
+			return this.getInternalServerError();
+		}
+		
 	}
 
 }

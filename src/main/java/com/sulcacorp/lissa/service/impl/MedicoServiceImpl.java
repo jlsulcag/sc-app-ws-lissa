@@ -20,7 +20,7 @@ public class MedicoServiceImpl implements IMedicoService{
 	private IMedicoDAO medicoDAO;
 	
 	@Override
-	public Medico guardar(Medico t) {
+	public Medico save(Medico t) {
 		t.setColegiatura(StringUtils.upperCase(t.getColegiatura()));
 		t.setEstado(Constant.STATUS_ENABLE);
 		t.setFechaReg(LocalDate.now());
@@ -28,25 +28,25 @@ public class MedicoServiceImpl implements IMedicoService{
 	}
 
 	@Override
-	public Medico actualizar(Medico t) {
+	public Medico update(Medico t) {
 		t.setColegiatura(StringUtils.upperCase(t.getColegiatura()));
 		t.setFechaReg(t.getFechaReg());
 		return medicoDAO.saveAndFlush(t);
 	}
 
 	@Override
-	public Medico buscar(Long id) {
+	public Medico findById(Long id) {
 		Optional<Medico> opt = medicoDAO.findById(id);
 		return opt.isPresent()?opt.get(): new Medico();
 	}
 
 	@Override
-	public List<Medico> listar() {
+	public List<Medico> findAllAct() {
 		return medicoDAO.findAll();
 	}
 
 	@Override
-	public void eliminar(Long id) {
+	public void delete(Long id) {
 		medicoDAO.deleteById(id);
 	}
 

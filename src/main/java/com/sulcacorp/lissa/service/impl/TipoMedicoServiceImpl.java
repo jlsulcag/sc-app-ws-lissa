@@ -15,28 +15,28 @@ public class TipoMedicoServiceImpl implements ITipoMedicoService {
 	private ITipoMedicoDAO tipoMedicoDAO;
 	
 	@Override
-	public TipoMedico guardar(TipoMedico t) {
+	public TipoMedico save(TipoMedico t) {
 		return tipoMedicoDAO.saveAndFlush(t);
 	}
 
 	@Override
-	public TipoMedico actualizar(TipoMedico t) {
+	public TipoMedico update(TipoMedico t) {
 		return tipoMedicoDAO.saveAndFlush(t);
 	}
 
 	@Override
-	public TipoMedico buscar(Long id) {
+	public TipoMedico findById(Long id) {
 		Optional<TipoMedico> op = tipoMedicoDAO.findById(id);
 		return op.isPresent()?op.get(): new TipoMedico();
 	}
 
 	@Override
-	public List<TipoMedico> listar() {
+	public List<TipoMedico> findAllAct() {
 		return tipoMedicoDAO.findAll();
 	}
 
 	@Override
-	public void eliminar(Long id) {
+	public void delete(Long id) {
 		tipoMedicoDAO.deleteById(id);
 		
 	}

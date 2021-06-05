@@ -1,8 +1,8 @@
 package com.sulcacorp.lissa.service;
 
-import com.sulcacorp.lissa.commons.IGenericService;
-import com.sulcacorp.lissa.model.EstadoCivil;
+import com.sulcacorp.lissa.dto.EstadoCivilDTO;
+import com.sulcacorp.lissa.service.generic.IGenericService;
 
-public interface IEstadoCivilService extends IGenericService<EstadoCivil, Long>{
-	
+public interface IEstadoCivilService extends IGenericService<EstadoCivilDTO, Long>{
+		
 }

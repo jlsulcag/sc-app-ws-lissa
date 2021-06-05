@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +22,7 @@ import lombok.NoArgsConstructor;
 @ApiModel(description = "Informacion de Persona")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "PERSONA")
 public class Persona {
@@ -88,6 +91,6 @@ public class Persona {
 	private int esProveedor;
 	
 	@Column(name = "ESTADO", nullable = false)
-	private int estado;
+	private int estado = 1;
 	
 }

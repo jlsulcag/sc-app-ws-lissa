@@ -11,18 +11,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sulcacorp.lissa.model.TipoMedico;
 import com.sulcacorp.lissa.service.ITipoMedicoService;
+import com.sulcacorp.lissa.service.impl.TipoMedicoServiceImpl;
 
 @RestController
 @RequestMapping("/api")
 public class TipoMedicoController {
 	
 	@Autowired
-	private ITipoMedicoService tipoMedicoService;
+	private TipoMedicoServiceImpl tipoMedicoService;
 	
 	@GetMapping(value = "/tipoMedico/findAll")
 	public ResponseEntity<List<TipoMedico>> findAll(){
 		List<TipoMedico> list = new ArrayList<>();
-		list = tipoMedicoService.listar();
+		list = tipoMedicoService.findAllAct();
 		if(!list.isEmpty()) {
 			return ResponseEntity.ok(list);
 		}

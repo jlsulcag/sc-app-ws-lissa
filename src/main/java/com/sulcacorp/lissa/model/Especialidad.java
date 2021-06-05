@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +23,7 @@ public class Especialidad {
 	@Column(name = "ID_ESPECIALIDAD")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idEspecialidad;
+	
 	
 	@Column(name = "DESC_ESPECIALIDAD", nullable = false, length = 150)
 	private String descEspecialidad;

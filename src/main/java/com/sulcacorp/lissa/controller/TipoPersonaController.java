@@ -18,52 +18,52 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.sulcacorp.lissa.exception.ModeloNotFoundException;
 import com.sulcacorp.lissa.model.TipoPersona;
-import com.sulcacorp.lissa.service.ITipoPersonaService;
+import com.sulcacorp.lissa.service.impl.TipoPersonaServiceImpl;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/tipopersona")
 public class TipoPersonaController {
 	
 	@Autowired
-	private ITipoPersonaService service;
+	private TipoPersonaServiceImpl service;
 	
-	@PostMapping(value = "/tipopersona/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> guardar(@Valid @RequestBody TipoPersona t){
 		TipoPersona obj = new TipoPersona();
 		t.setDescripcion(t.getDescripcion().toUpperCase());
-		obj = service.guardar(t);
+		obj = service.save(t);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}").buildAndExpand(obj.getIdTipoPersona()).toUri();
 		return ResponseEntity.created(location).build();
 	}
 	
-	@PutMapping(value = "/tipopersona/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> actualizar(@Valid @RequestBody TipoPersona t) {
 		t.setDescripcion(t.getDescripcion().toUpperCase());
-		service.actualizar(t);
+		service.update(t);
 		return new ResponseEntity<Object>(HttpStatus.OK);
 	}
 
-	@DeleteMapping(value = "/tipopersona/delete/{id}")
+	@DeleteMapping(value = "/delete/{id}")
 	public void eliminar(@PathVariable("id") long id) {
-		TipoPersona obj = service.buscar(id);
+		TipoPersona obj = service.findById(id);
 		if(	obj != null && obj.getIdTipoPersona()!= null) {
 			throw new ModeloNotFoundException("ID NO ENCONTRADO "+id);
 		}else {
-			service.eliminar(id);
+			service.delete(id);
 		}
 	}
 
-	@GetMapping(value = "/tipopersona/search/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/search/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<TipoPersona> buscarXId(@PathVariable("id") long id) {
-		TipoPersona obj = service.buscar(id);
+		TipoPersona obj = service.findById(id);
 		if (obj == null || obj.getIdTipoPersona() == 0) {
 			throw new ModeloNotFoundException("ID NO ENCONTRADO " + id);
 		}
 		return new ResponseEntity<TipoPersona>(obj, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/tipopersona/findAll", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/findAll", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<TipoPersona>> listar() {
-		return new ResponseEntity<List<TipoPersona>>(service.listar(), HttpStatus.OK);
+		return new ResponseEntity<List<TipoPersona>>(service.findAllAct(), HttpStatus.OK);
 	}
 }
